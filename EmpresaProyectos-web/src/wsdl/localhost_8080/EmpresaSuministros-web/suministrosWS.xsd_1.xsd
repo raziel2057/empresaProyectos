@@ -1,0 +1,77 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.1-b419 (branches/2.3.1.x-7937; 2014-08-04T08:11:03+0000) JAXWS-RI/2.2.10-b140803.1500 JAXWS-API/2.2.11 JAXB-RI/2.2.10-b140802.1033 JAXB-API/2.2.12-b140109.1041 svn-revision#unknown. --><xs:schema xmlns:tns="http://webServices.arqui.espe.com.ec/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://webServices.arqui.espe.com.ec/">
+
+<xs:element name="busquedaProductos" type="tns:busquedaProductos"/>
+
+<xs:element name="busquedaProductosResponse" type="tns:busquedaProductosResponse"/>
+
+<xs:element name="obtenerListadoClientes" type="tns:obtenerListadoClientes"/>
+
+<xs:element name="obtenerListadoClientesResponse" type="tns:obtenerListadoClientesResponse"/>
+
+<xs:element name="registrarAlumno" type="tns:registrarAlumno"/>
+
+<xs:element name="registrarAlumnoResponse" type="tns:registrarAlumnoResponse"/>
+
+<xs:complexType name="busquedaProductos">
+<xs:sequence>
+<xs:element name="cadenaB" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="busquedaProductosResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:producto" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="producto">
+<xs:sequence>
+<xs:element name="codigo" type="xs:string" minOccurs="0"/>
+<xs:element name="codigoProveedor" type="xs:string" minOccurs="0"/>
+<xs:element name="descripcion" type="xs:string" minOccurs="0"/>
+<xs:element name="precioUnitario" type="xs:decimal" minOccurs="0"/>
+<xs:element name="proveedor" type="tns:proveedor" minOccurs="0"/>
+<xs:element name="stock" type="xs:int" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="proveedor">
+<xs:sequence>
+<xs:element name="codigo" type="xs:string" minOccurs="0"/>
+<xs:element name="descripcion" type="xs:string" minOccurs="0"/>
+<xs:element name="identificacion" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="registrarAlumno">
+<xs:sequence>
+<xs:element name="name" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="registrarAlumnoResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="obtenerListadoClientes">
+<xs:sequence/>
+</xs:complexType>
+
+<xs:complexType name="obtenerListadoClientesResponse">
+<xs:sequence>
+<xs:element name="return" type="tns:cliente" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="cliente">
+<xs:sequence>
+<xs:element name="codigo" type="xs:string" minOccurs="0"/>
+<xs:element name="direccion" type="xs:string" minOccurs="0"/>
+<xs:element name="identificacion" type="xs:string" minOccurs="0"/>
+<xs:element name="nombre" type="xs:string" minOccurs="0"/>
+<xs:element name="telefono" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>

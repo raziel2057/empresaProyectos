@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <f:view contentType="text/html">
+
+        <h:body>
+            <ui:composition template="/plantillas/templateLogedAdministrator.xhtml">
+
+                <ui:define name="contenido">
+                    <div class="padding">
+
+                        <div> <h2> Datos de Empleados registrados </h2> </div>
+
+                        <p:dataTable var="empleado" value="#{empleadoBean.empleados}"  scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="150"  
+                                     selectionMode="single" selection="#{empleadoBean.empleadoSelected}" rowKey="#{empleado.codigo}" >
+                            <p:ajax event="rowSelect"  update="@form"/>
+                            <p:column headerText="Codigo">
+                                <h:outputText value="#{empleado.codigo}" />
+                            </p:column>
+
+                            <p:column headerText="Nombre">
+                                <h:outputText value="#{empleado.nombre}" />
+                            </p:column>
+
+                            <p:column headerText="Número Seg. Social">
+                                <h:outputText value="#{empleado.numeroSegSocial}" />
+                            </p:column>
+
+                            <p:column headerText="Dirección">
+                                <h:outputText value="#{empleado.direccion}" />
+                            </p:column>
+
+                            <p:column headerText="Cargo">
+                                <h:outputText value="#{empleado.cargo.descripcion}" />
+                            </p:column>
+
+                            <p:column headerText="Usuario">
+                                <h:outputText value="#{empleado.usuario}" />
+                            </p:column>
+
+                           
+                            <p:column headerText="Tipo">
+                                <h:outputText value="#{cliente.tipo eq 'A' ?'Administrador':'Cliente'}" />
+                            </p:column>
+
+
+                        </p:dataTable>
+
+                        <p:dialog  header="Cliente" widgetVar="cliDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closable="false">
+                            <p:outputPanel id="carDetail" style="text-align:center;">
+                                <p:panelGrid  columns="3" rendered="#{not empty empleadoBean.empleado}" columnClasses="label,value">
+
+                                    <p:outputLabel for="nombre" value="Nombre:" />
+                                    <p:inputText id="nombre" value="#{empleadoBean.empleado.nombre}"  requiredMessage="Ingrese el nombre"
+                                                 required="true" label="nombre" >
+                                        <p:ajax event="keyup"
+                                                listener="#{empleadoBean.validateNombre()}"
+                                                update="messageNombre" />
+                                    </p:inputText>
+                                    <p:messages id="messageNombre" showDetail="true" showSummary="true"/>
+
+                                    <p:outputLabel for="identificacion" value="Número Seg. Social:" />
+                                    <p:inputText id="identificacion" value="#{empleadoBean.empleado.numeroSegSocial}" requiredMessage="Ingrese el número de seguridad social"
+                                                 required="true" label="identificacion" > 
+                                        <p:ajax event="keyup"
+                                                listener="#{empleadoBean.validateIdentificacion()}"
+                                                update="messageIdentificacion" />
+                                    </p:inputText>
+                                    <p:messages id="messageIdentificacion" showDetail="true" showSummary="true"/>
+
+                                    <p:outputLabel for="direccion" value="Dirección:" />
+                                    <p:inputText id="direccion" value="#{empleadoBean.empleado.direccion}" 
+                                                 required="false" label="direccion" > 
+                                        <p:ajax event="keyup"
+                                                listener="#{empleadoBean.validateDireccion()}"
+                                                update="messageDireccion" />
+                                    </p:inputText>
+                                    <p:messages id="messageDireccion" showDetail="true" showSummary="true"/>
+
+                                    <p:outputLabel for="salario" value="Salario:" />
+                                    <p:inputText id="salario" value="#{empleadoBean.empleado.salario}" requiredMessage="Ingrese el salario"
+                                                 required="true" label="salario" >
+                                       
+                                    </p:inputText>
+                                    <p:messages id="messageSalario" showDetail="true" showSummary="true"/>
+                                    
+                                    <p:outputLabel for="sexo" value="Sexo:" />
+                                    <p:selectOneMenu id="sexo" value="#{empleadoBean.empleado.sexo}" style="width:125px" requiredMessage="Seleccione el Sexo  "
+                                                     required="true" label="sexo">
+                                        <f:selectItem itemLabel="Masculino" itemValue="M" />
+                                        <f:selectItem itemLabel="Femenino" itemValue="F" />
+
+                                    </p:selectOneMenu>
+                                    <p:message for="sexo" />
+                                    
+                                    <p:outputLabel for="fechaNacimiento" value="Fecha de nacimiento:" />
+                                    <p:calendar locale="es" id="fechaNacimiento" value="#{empleadoBean.empleado.fechaNacimiento}" pattern="dd/MM/yyyy" 
+                                                maxdate="#{empleadoBean.fechaMaxima}"
+                                                requiredMessage="Seleccione la fecha de nacimiento" required="true">
+                                    </p:calendar>
+                                    <p:messages for="fechaNacimiento"/>
+
+                                    <p:outputLabel for="usuario" value="Usuario:" />
+                                    <p:inputText id="usuario" value="#{empleadoBean.empleado.usuario}" requiredMessage="Ingrese el Usuario"
+                                                 required="true" label="usuario"> 
+                                        <p:ajax event="keyup"
+                                                listener="#{empleadoBean.validateUsuario()}"
+                                                update="messageUsuario" />
+                                    </p:inputText>
+                                    <p:messages id="messageUsuario" showDetail="true" showSummary="true"/>
+
+                                    <p:outputLabel for="clave" value="Clave:" />
+                                    <p:inputText id="clave" value="#{empleadoBean.empleado.clave}" requiredMessage="Ingrese la Clave"
+                                                 required="true" label="clave">  
+                                        <p:ajax event="keyup"
+                                                listener="#{empleadoBean.validateClave}"
+                                                update="messageClave" />
+                                    </p:inputText>
+                                    <p:messages id="messageClave" showDetail="true" showSummary="true"/>
+
+                                    <p:outputLabel for="tipo" value="Tipo:" />
+                                    <p:selectOneMenu id="tipo" value="#{empleadoBean.empleado.tipo}" style="width:125px" requiredMessage="Seleccione el Tipo de Cliente  "
+                                                     required="true" label="tipo">
+                                        <f:selectItem itemLabel="Empleado" itemValue="R" />
+                                        <f:selectItem itemLabel="Administrador" itemValue="A" />
+
+                                    </p:selectOneMenu>
+                                    <p:message for="tipo" />
+
+
+                                    <p:outputLabel for="cargo" value="Cargo:" />
+                                    <p:selectOneMenu id="cargo" value="#{empleadoBean.empleado.codigoCargo}" style="width:125px" requiredMessage="Seleccione una empresa  "
+                                                 required="true" label="tipo">
+                                        <f:selectItems value="#{empleadoBean.cargos}" var="cargo" itemLabel="#{cargo.descripcion}" itemValue="#{cargo.codigo}" />
+
+
+                                    </p:selectOneMenu>
+                                    <p:message for="cargo" />
+
+
+
+                                    <p:spacer />
+                                    <p:commandButton value="Guardar" actionListener="#{empleadoBean.aceptar()}" immediate="false" update="@form" disabled="#{empleadoBean.empleado eq null}"/>
+                                    <p:commandButton value="Cancelar" actionListener="#{empleadoBean.cancelar()}" immediate="true"  update="@form" />
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:dialog>
+
+
+                        <p:spacer height="10px" />
+                        <p:commandButton value="Nuevo Empleado" actionListener="#{empleadoBean.nuevo()}" immediate="false" update="@form" oncomplete="PF('cliDialog').show()" />
+                        <p:commandButton value="Actualizar Empleado" update="@form" oncomplete="PF('cliDialog').show()" icon="ui-icon-search" title="View" actionListener="#{empleadoBean.modificar()}" disabled="#{clienteBean.clienteSelected eq null}" />
+                        <p:commandButton value="Eliminar Empleado" update="@form" oncomplete="PF('cliDialog').show()" icon="ui-icon-search" title="View" actionListener="#{empleadoBean.eliminar()}" disabled="#{clienteBean.clienteSelected eq null}" />
+
+
+                    </div>
+
+                </ui:define>        
+            </ui:composition>
+
+        </h:body>       
+    </f:view>
+
+
+</html>

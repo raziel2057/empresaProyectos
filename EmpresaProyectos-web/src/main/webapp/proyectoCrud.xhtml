@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+    <f:view contentType="text/html">
+
+        <h:body>
+            <ui:composition template="/plantillas/templateLogedAdministrator.xhtml">
+
+                <ui:define name="contenido">
+                    <div class="padding">
+
+                        <div> <h2> Datos de Proyectos registrados </h2> </div>
+
+                        <p:dataTable var="proyecto" value="#{proyectoBean.proyectos}"  scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="150"  
+                                     selectionMode="single" selection="#{proyectoBean.proyectoSelected}" rowKey="#{proyecto.codigo}" >
+                            <p:ajax event="rowSelect"  update="@form"/>
+                            <p:column headerText="Codigo">
+                                <h:outputText value="#{proyecto.codigo}" />
+                            </p:column>
+
+                            <p:column headerText="Descripción">
+                                <h:outputText value="#{proyecto.descripcion}" />
+                            </p:column>
+
+                            <p:column headerText="Sede">
+                                <h:outputText value="#{proyecto.sede.departamento.nombre.concat(' - '.concat(proyecto.sede.lugar.nombre))}" />
+                            </p:column>
+
+                            <p:column headerText="Estado">
+                                <h:outputText value="#{proyecto.estado}" />
+                            </p:column>
+
+                            
+
+                        </p:dataTable>
+
+                        <p:dialog  header="Cliente" widgetVar="cliDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closable="false">
+                            <p:outputPanel id="carDetail" style="text-align:center;">
+                                <p:panelGrid  columns="3" rendered="#{not empty proyectoBean.proyecto}" columnClasses="label,value">
+
+                                    <p:outputLabel for="nombre" value="Descripción:" />
+                                    <p:inputText id="nombre" value="#{proyectoBean.proyecto.descripcion}"  requiredMessage="Ingrese la descripción"
+                                                 required="true" label="nombre" >
+                                    
+                                    </p:inputText>
+                                    <p:messages id="messageNombre" showDetail="true" showSummary="true"/>
+
+                                   
+                                    
+                                    <p:outputLabel for="estado" value="Estado:" />
+                                    <p:selectOneMenu id="estado" value="#{proyectoBean.proyecto.estado}" style="width:125px" requiredMessage="Seleccione el Estado del proyecto  "
+                                                     required="true" label="estado">
+                                        <f:selectItem itemLabel="Activo" itemValue="Activo" />
+                                        <f:selectItem itemLabel="Cancelado" itemValue="Cancelado" />
+
+                                    </p:selectOneMenu>
+                                    <p:message for="estado" />
+                                    
+                                   
+                                    <p:outputLabel for="sede" value="Sede:" />
+                                    <p:selectOneMenu id="sede" value="#{proyectoBean.proyecto.codigoSede}" style="width:125px" requiredMessage="Seleccione una Sede "
+                                                 required="true" label="sede">
+                                        <f:selectItems value="#{proyectoBean.sedes}" var="sede" itemLabel="#{sede.departamento.nombre.concat(' - '.concat(sede.lugar.nombre))}" itemValue="#{sede.codigo}" />
+
+
+                                    </p:selectOneMenu>
+                                    <p:message for="sede" />
+
+
+
+                                    <p:spacer />
+                                    <p:commandButton value="Guardar" actionListener="#{proyectoBean.aceptar()}" immediate="false" update="@form" disabled="#{proyectoBean.proyecto eq null}"/>
+                                    <p:commandButton value="Cancelar" actionListener="#{proyectoBean.cancelar()}" immediate="true"  update="@form" />
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:dialog>
+
+
+                        <p:spacer height="10px" />
+                        <p:commandButton value="Nuevo Proyecto" actionListener="#{proyectoBean.nuevo()}" immediate="false" update="@form" oncomplete="PF('cliDialog').show()" />
+                        <p:commandButton value="Actualizar Proyecto" update="@form" oncomplete="PF('cliDialog').show()" icon="ui-icon-search" title="View" actionListener="#{proyectoBean.modificar()}" disabled="#{proyectoBean.proyectoSelected eq null}" />
+                        <p:commandButton value="Eliminar Proyecto" update="@form" oncomplete="PF('cliDialog').show()" icon="ui-icon-search" title="View" actionListener="#{proyectoBean.eliminar()}" disabled="#{proyectoBean.proyectoSelected eq null}" />
+                        <p:commandButton value="Recursos" update="@form" action="asignarRecursos.xhtml?faces-redirect=true" icon="ui-icon-search" title="View" actionListener="#{proyectoBean.asignarProyecto()}" disabled="#{proyectoBean.proyectoSelected eq null}" />
+
+
+                    </div>
+
+                </ui:define>        
+            </ui:composition>
+
+        </h:body>       
+    </f:view>
+
+
+</html>

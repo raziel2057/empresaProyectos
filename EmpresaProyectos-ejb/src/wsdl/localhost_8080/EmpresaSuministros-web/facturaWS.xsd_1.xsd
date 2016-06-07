@@ -1,0 +1,70 @@
+<?xml version='1.0' encoding='UTF-8'?><!-- Published by JAX-WS RI (http://jax-ws.java.net). RI's version is Metro/2.3.1-b419 (branches/2.3.1.x-7937; 2014-08-04T08:11:03+0000) JAXWS-RI/2.2.10-b140803.1500 JAXWS-API/2.2.11 JAXB-RI/2.2.10-b140802.1033 JAXB-API/2.2.12-b140109.1041 svn-revision#unknown. --><xs:schema xmlns:tns="http://webServices.arqui.espe.com.ec/" xmlns:xs="http://www.w3.org/2001/XMLSchema" version="1.0" targetNamespace="http://webServices.arqui.espe.com.ec/">
+
+<xs:element name="guardarFactura" type="tns:guardarFactura"/>
+
+<xs:element name="guardarFacturaResponse" type="tns:guardarFacturaResponse"/>
+
+<xs:complexType name="guardarFactura">
+<xs:sequence>
+<xs:element name="codigoCliente" type="xs:string" minOccurs="0"/>
+<xs:element name="detalleFactura" type="tns:detalleFactura" minOccurs="0" maxOccurs="unbounded"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="detalleFactura">
+<xs:sequence>
+<xs:element name="cantidad" type="xs:int" minOccurs="0"/>
+<xs:element name="codigoFactura" type="xs:string" minOccurs="0"/>
+<xs:element name="codigoProducto" type="xs:string" minOccurs="0"/>
+<xs:element name="costoTotal" type="xs:decimal" minOccurs="0"/>
+<xs:element name="costoUnitario" type="xs:decimal" minOccurs="0"/>
+<xs:element name="factura" type="tns:factura" minOccurs="0"/>
+<xs:element name="producto" type="tns:producto" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="factura">
+<xs:sequence>
+<xs:element name="cliente" type="tns:cliente" minOccurs="0"/>
+<xs:element name="codigo" type="xs:string" minOccurs="0"/>
+<xs:element name="codigoCliente" type="xs:string" minOccurs="0"/>
+<xs:element name="fecha" type="xs:dateTime" minOccurs="0"/>
+<xs:element name="total" type="xs:decimal" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="cliente">
+<xs:sequence>
+<xs:element name="codigo" type="xs:string" minOccurs="0"/>
+<xs:element name="direccion" type="xs:string" minOccurs="0"/>
+<xs:element name="identificacion" type="xs:string" minOccurs="0"/>
+<xs:element name="nombre" type="xs:string" minOccurs="0"/>
+<xs:element name="telefono" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="producto">
+<xs:sequence>
+<xs:element name="codigo" type="xs:string" minOccurs="0"/>
+<xs:element name="codigoProveedor" type="xs:string" minOccurs="0"/>
+<xs:element name="descripcion" type="xs:string" minOccurs="0"/>
+<xs:element name="precioUnitario" type="xs:decimal" minOccurs="0"/>
+<xs:element name="proveedor" type="tns:proveedor" minOccurs="0"/>
+<xs:element name="stock" type="xs:int" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="proveedor">
+<xs:sequence>
+<xs:element name="codigo" type="xs:string" minOccurs="0"/>
+<xs:element name="descripcion" type="xs:string" minOccurs="0"/>
+<xs:element name="identificacion" type="xs:string" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:complexType name="guardarFacturaResponse">
+<xs:sequence>
+<xs:element name="return" type="xs:boolean" minOccurs="0"/>
+</xs:sequence>
+</xs:complexType>
+</xs:schema>
