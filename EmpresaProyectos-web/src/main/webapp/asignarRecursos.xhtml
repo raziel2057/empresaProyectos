@@ -23,7 +23,7 @@ and open the template in the editor.
                        
                         <h2><p:outputLabel  value="#{asignarRecursosBean.proyecto.descripcion}" style="text-align:center;"/> </h2> 
 
-                        <p:dataTable var="recurso" value="#{asignarRecursosBean.recursos}"  scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="150"  
+                        <p:dataTable var="recurso" value="#{asignarRecursosBean.recursos}"  scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="500"  
                                      selectionMode="single" selection="#{asignarRecursosBean.recursoSelected}" rowKey="#{recurso.codigo}" >
                             <p:ajax event="rowSelect"  update="@form"/>
                             <p:column headerText="Código">
@@ -32,6 +32,10 @@ and open the template in the editor.
 
                             <p:column headerText="Producto">
                                 <h:outputText value="#{recurso.descripcionProducto}" />
+                            </p:column>
+                            
+                            <p:column headerText="Cantidad">
+                                <h:outputText value="#{recurso.cantidadProducto}" />
                             </p:column>
 
                             <p:column headerText="Proveedor">
@@ -43,13 +47,18 @@ and open the template in the editor.
                                     <f:convertDateTime type="date" pattern="dd-MM-yyyy"/>
                                 </h:outputText>
                             </p:column>
+                            
+                            <f:facet name="footer">
+                                <p:commandButton value="Adquirir Recurso"  actionListener="#{asignarRecursosBean.realizarBusqueda()}" immediate="false" oncomplete="PF('cliDialog').show()" />
+                            </f:facet>   
+                            
 
                             
                         </p:dataTable>
 
-                        <p:dialog  header="Recursos" widgetVar="cliDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closable="false" width="900" height="700">
+                        <p:dialog  header="Recursos" widgetVar="cliDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closable="false" width="900" height="890">
                             <p:outputPanel id="carDetail" style="text-align:center;">
-                                <p:panelGrid  columns="3" rendered="#{asignarRecursosBean.busqueda}" columnClasses="label,value">
+                                <p:panelGrid  columns="3"  columnClasses="label,value">
 
                                     <p:outputLabel for="busqueda" value="Buscar:" />
                                     <p:inputText id="busqueda" value="#{asignarRecursosBean.cadenaCOnsulta}"  requiredMessage="Ingrese la cadena de búsqueda"
@@ -59,11 +68,11 @@ and open the template in the editor.
                                     <p:messages id="messagebusqueda" showDetail="true" showSummary="true"/>
 
                                     <p:spacer />
-                                    <p:commandButton value="Buscar" actionListener="#{asignarRecursosBean.consultaProductos()}" immediate="false" update="listaP" />
+                                    <p:commandButton value="Buscar" actionListener="#{asignarRecursosBean.consultaProductos()}" oncomplete="PF('cliDialog').show()"  immediate="false" update="listaP" />
                                     <p:commandButton value="Cancelar" actionListener="#{asignarRecursosBean.cancel()}" immediate="true"  update="@form" />
                                 </p:panelGrid>
                                 
-                                <p:dataTable id="listaP" var="producto" value="#{asignarRecursosBean.productosConsulta}"  scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="300"  
+                                <p:dataTable id="listaP" var="producto" value="#{asignarRecursosBean.productosConsulta}"  scrollRows="20" scrollable="true" liveScroll="true" scrollHeight="350"  
                                              selectionMode="single" selection="#{asignarRecursosBean.productoSelected}" rowKey="#{producto.codigo}" >
                                     <p:ajax event="rowSelect"  update="@form" oncomplete="PF('productoCantidadDialog').show()" />
                                     <p:column headerText="Código">
@@ -105,16 +114,16 @@ and open the template in the editor.
                                         <h:outputText value="#{detalle.costoTotal}" />
                                     </p:column>
                                     <f:facet name="footer">
-                                        <p:commandButton id="btnPagar" value="Realizar Pedido"  actionListener="#{asignarRecursosBean.enviarPedido()}" immediate="false" update="listaPedido" />
+                                        <p:commandButton id="btnPagar" value="Realizar Pedido"  actionListener="#{asignarRecursosBean.enviarPedido()}" immediate="false" update="@form" />
                                     </f:facet>     
                                 </p:dataTable>
                                
                             </p:outputPanel>
                         </p:dialog>
                         
-                        <p:dialog  header="Ingresar cantidad producto" widgetVar="productoCantidadDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closable="false" width="600" height="350">
+                        <p:dialog  header="Ingresar cantidad producto" widgetVar="productoCantidadDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closable="false" width="400" height="150">
                             <p:outputPanel id="boletoDetail"  style="text-align:center;">
-                                <p:panelGrid    columns="3" columnClasses="label,value">
+                                <p:panelGrid    columns="2" columnClasses="label,value">
                                     
                                        
                                     <p:outputLabel for="nombre" value="Descripción:" />
@@ -122,14 +131,12 @@ and open the template in the editor.
                                                  required="false" label="nombre" readonly="true">
                                     
                                     </p:inputText>
-                                    <p:messages id="messageNombre" showDetail="true" showSummary="true"/>
                                     
-                                    <p:outputLabel for="cantidadP" value="Cantidad:" />
-                                    <p:inputText id="cantidadP" value="#{asignarRecursosBean.cantidad}"  requiredMessage="Ingrese la cantidad"
-                                                 required="true" label="nombre" readonly="false">
-                                    
-                                    </p:inputText>
-                                    <p:messages id="messagecantidadP" showDetail="true" showSummary="true"/>
+                                    <p:outputLabel for="city" value="Cantidad: " />
+                                    <p:selectOneMenu id="city" value="#{asignarRecursosBean.cantidad}" effect="fold" editable="true">
+                                        
+                                        <f:selectItems value="#{asignarRecursosBean.listaNumeros}" />
+                                    </p:selectOneMenu>
 
                                 </p:panelGrid>
                                 <p:commandButton value="Aceptar" update="@form" actionListener="#{asignarRecursosBean.agregarProductoDetalle()}" immediate="false" oncomplete="PF('cliDialog').show()" />
@@ -139,7 +146,7 @@ and open the template in the editor.
 
 
                         <p:spacer height="10px" />
-                        <p:commandButton value="Adquirir Recurso" actionListener="#{asignarRecursosBean.realizarBusqueda()}" immediate="false" oncomplete="PF('cliDialog').show()" />
+                        
                         
 
 

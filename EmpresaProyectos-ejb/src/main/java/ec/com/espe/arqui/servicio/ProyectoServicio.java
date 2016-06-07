@@ -44,6 +44,12 @@ public class ProyectoServicio {
         this.proyectoDAO.insert(proyecto);
         this.proyectoDAO.flush();
     }
+    
+     public void crearDetalleRecurso(DetalleRecurso detalleRecurso) throws ValidacionException {
+
+        this.detalleRecursoDAO.insert(detalleRecurso);
+        this.detalleRecursoDAO.flush();
+    }
 
     public void actualiarProyecto(Proyecto proyecto) {
         this.proyectoDAO.update(proyecto);

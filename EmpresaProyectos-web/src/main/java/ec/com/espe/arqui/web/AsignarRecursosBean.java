@@ -13,13 +13,16 @@ import ec.com.espe.arqui.webservices.Producto;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.PostConstruct;
 
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
+import javax.faces.context.FacesContext;
 import org.apache.commons.beanutils.BeanUtils;
 
 /**
@@ -49,6 +52,7 @@ public class AsignarRecursosBean {
     private DetalleFactura detalleFacturaSelected;
     
     private String codigoCliente;
+    private List<Integer> listaNumeros;
     
     
     @ManagedProperty(value = "#{loginBean}")
@@ -154,6 +158,14 @@ public class AsignarRecursosBean {
     public void setBusqueda(Boolean busqueda) {
         this.busqueda = busqueda;
     }
+
+    public List<Integer> getListaNumeros() {
+        return listaNumeros;
+    }
+
+    public void setListaNumeros(List<Integer> listaNumeros) {
+        this.listaNumeros = listaNumeros;
+    }
     
     
     
@@ -163,6 +175,11 @@ public class AsignarRecursosBean {
         try
         {
             //this.detalleFacturaSelected = new DetalleFactura();
+            this.listaNumeros = new ArrayList<Integer>();
+            for(int i = 1;i<=100;i++)
+            {
+                this.listaNumeros.add(i);
+            }
             this.listaDetalleFactura = new ArrayList<>();
             this.codigoCliente="CLI0001";
             this.proyecto= new Proyecto();
@@ -219,7 +236,25 @@ public class AsignarRecursosBean {
             java.lang.Boolean result = port.guardarFactura(this.codigoCliente, this.listaDetalleFactura);
             System.out.println("Result = "+result);
             if(result)
+            {
                 System.out.println("La Compra se generó correctamente");
+                for(DetalleFactura detf : listaDetalleFactura)
+                {
+                    try
+                    {
+                        this.proyectoServicio.crearDetalleRecurso(new DetalleRecurso("", this.proyecto.getCodigo(), detf.getCodigoProducto(), detf.getProducto().getDescripcion(), detf.getCostoUnitario(), detf.getCantidad(), detf.getProducto().getCodigoProveedor(), detf.getProducto().getProveedor().getDescripcion(), new Date()));
+                        this.recursos = this.proyectoServicio.buscarRecursosPorProyecto(this.proyecto.getCodigo());
+                        this.cancel();
+                        FacesContext context = FacesContext.getCurrentInstance();
+                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Felicitaciones", "La compra se ha generado correctamente"));
+                    }
+                    catch(Exception ex)
+                    {
+                        FacesContext context = FacesContext.getCurrentInstance();
+                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error no controlado", ex.getMessage()));
+                    }
+                }
+            }
             else
                 System.out.println("La compra no pudo ser realizada");
         } catch (Exception ex) {
@@ -232,5 +267,7 @@ public class AsignarRecursosBean {
     {
         this.busqueda = false;
         this.listaDetalleFactura = null;
+        this.listaDetalleFactura = new ArrayList<>();
+        this.productoSelected = null;
     }
 }
