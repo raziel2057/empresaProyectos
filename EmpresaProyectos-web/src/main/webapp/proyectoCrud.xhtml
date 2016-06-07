@@ -39,7 +39,7 @@ and open the template in the editor.
                                 <h:outputText value="#{proyecto.estado}" />
                             </p:column>
 
-                            
+
 
                         </p:dataTable>
 
@@ -50,12 +50,14 @@ and open the template in the editor.
                                     <p:outputLabel for="nombre" value="Descripción:" />
                                     <p:inputText id="nombre" value="#{proyectoBean.proyecto.descripcion}"  requiredMessage="Ingrese la descripción"
                                                  required="true" label="nombre" >
-                                    
+                                        <p:ajax event="keyup"
+                                                listener="#{proyectoBean.validateNombre()}"
+                                                update="message" />
                                     </p:inputText>
-                                    <p:messages id="messageNombre" showDetail="true" showSummary="true"/>
+                                    <p:messages id="message" showDetail="true" showSummary="true"/>
 
-                                   
-                                    
+
+
                                     <p:outputLabel for="estado" value="Estado:" />
                                     <p:selectOneMenu id="estado" value="#{proyectoBean.proyecto.estado}" style="width:125px" requiredMessage="Seleccione el Estado del proyecto  "
                                                      required="true" label="estado">
@@ -64,11 +66,11 @@ and open the template in the editor.
 
                                     </p:selectOneMenu>
                                     <p:message for="estado" />
-                                    
-                                   
+
+
                                     <p:outputLabel for="sede" value="Sede:" />
                                     <p:selectOneMenu id="sede" value="#{proyectoBean.proyecto.codigoSede}" style="width:125px" requiredMessage="Seleccione una Sede "
-                                                 required="true" label="sede">
+                                                     required="true" label="sede">
                                         <f:selectItems value="#{proyectoBean.sedes}" var="sede" itemLabel="#{sede.departamento.nombre.concat(' - '.concat(sede.lugar.nombre))}" itemValue="#{sede.codigo}" />
 
 

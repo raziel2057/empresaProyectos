@@ -9,7 +9,7 @@
     <h:body>
         <ui:composition template="/plantillas/templateNoLoged.xhtml">
             <ui:define name="contenidoHeader">
-                
+
                 <p:panel header="Inicio de Sesión">
                     <h:panelGrid columns="2">
                         <p:outputLabel for="usuario" value="Usuario:" />
@@ -17,45 +17,55 @@
                         <p:outputLabel for="clave" value="Clave:" />
                         <p:password tabindex="2" id="clave" value="#{loginBean.password}" required="true" />
                     </h:panelGrid>
-                    
+
                     <p:commandButton id="registrarseButton" immediate="true" value="Registrarse" 
                                      actionListener="#{loginBean.registroCliente()}" update="@form" 
                                      action="nuevoCliente.xhtml?faces-redirect=true"/>
                     <p:commandButton tabindex="3" id="loginButton" value="Aceptar" 
                                      actionListener="#{loginBean.login()}" update="@form"
-             oncomplete="manejarLogin(xhr, status, args)"/>
+                                     oncomplete="manejarLogin(xhr, status, args)"/>
                 </p:panel>
-                
-                 <script type="text/javascript">
+
+                <script type="text/javascript">
                     //<![CDATA[
                     function manejarLogin(xhr, status, args) {
-                      if (!args.validationFailed && args.estaLogeado) {
-                        setTimeout(function() {
-                          window.location = args.view;
-                        }, 500);
-                      }
+                        if (!args.validationFailed && args.estaLogeado) {
+                            setTimeout(function () {
+                                window.location = args.view;
+                            }, 500);
+                        }
                     }
-                  //]]>
-                  </script>
-                
-                
-                
+                    //]]>
+                </script>
+
+
+
             </ui:define>
             <ui:define name="contenido">
-                <h2>Bienvenidos a SAIV</h2>
-                Qué es SAIV?<br />
-                SAIV es una herramienta para la creación y administración de sus itinerarios de viaje dentro del Ecuador.
+                    <table border="0">
+                        <tr>
+                            <td>
+                                <img src="images/roll.jpg" alt="Bienvenido" width="450" height="250"/>
+                            </td>
+                            <td>
+                                <h2>Bienvenidos a SGP</h2>
+                                <h3> El Sistema de Gestión de Poryectos es un software para la creación y administración 
+                        de los proyectos de la empresa. Esta constituye una herramienta estrátegca para la dirección y planificación
+                        empresarial.</h3>
+                            </td>
+                        </tr>
+                    </table>
 
-                <div id="box"> <strong>Contactos:</strong><br/>
-                 <strong>Telfs:</strong> 0995849189 / 022125447
-                <br/>
-                <strong>Dirección:</strong> Sangolquí - La Colina
-                 </div>
-                
-            </ui:define>
+                    <div id="box"> <strong>CONTACTOS</strong><br/>
+                        <strong>     Dirección:</strong> Sangolquí - La Colina
+                        <strong>.     Telfs:</strong> 0995849189 / 022125447
+                        
+                    </div>
+
+                </ui:define>
         </ui:composition>
     </h:body>
-    
-   
-    
+
+
+
 </html>

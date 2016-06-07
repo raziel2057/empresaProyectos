@@ -5,7 +5,6 @@
  */
 package ec.com.espe.arqui.web;
 
-
 import ec.com.espe.arqui.modelo.Cargo;
 import ec.com.espe.arqui.modelo.Empleado;
 import ec.com.espe.arqui.servicio.CargoServicio;
@@ -38,7 +37,7 @@ public class EmpleadoBean extends BaseBean implements Serializable {
     private List<Empleado> empleados;
     private Empleado empleado;
     private Empleado empleadoSelected;
-    
+
     @EJB
     private CargoServicio cargoServicio;
     private List<Cargo> cargos;
@@ -55,9 +54,6 @@ public class EmpleadoBean extends BaseBean implements Serializable {
     private boolean enRegistro;
 
     private Date fechaMaxima;
-   
-
-    
 
     public boolean isEnRegistro() {
         return enRegistro;
@@ -70,8 +66,6 @@ public class EmpleadoBean extends BaseBean implements Serializable {
     public void setFechaMaxima(Date fechaMaxima) {
         this.fechaMaxima = fechaMaxima;
     }
-    
-    
 
     public void setEnRegistro(boolean enRegistro) {
         this.enRegistro = enRegistro;
@@ -117,8 +111,6 @@ public class EmpleadoBean extends BaseBean implements Serializable {
         this.empleadoSesion = empleadoSesion;
     }
 
-    
-
     public String getNuevaClave() {
         return nuevaClave;
     }
@@ -142,18 +134,16 @@ public class EmpleadoBean extends BaseBean implements Serializable {
     public void setCargos(List<Cargo> cargos) {
         this.cargos = cargos;
     }
-    
-    
 
     @PostConstruct
     public void inicializar() {
         empleados = empleadoServicio.obtenerTodas();
         enRegistro = false;
-        
+
         this.cargos = this.cargoServicio.obtenerTodas();
-        
+
         this.fechaMaxima = new Date();
-        this.fechaMaxima.setYear(this.fechaMaxima.getYear()-16);
+        this.fechaMaxima.setYear(this.fechaMaxima.getYear() - 16);
 
         if (this.getDatosLogin().isEnNuuevoCliente()) {
 
@@ -208,33 +198,31 @@ public class EmpleadoBean extends BaseBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
 
         if (super.isEnNuevo()) {
-            
-                try {
-                    String claveEncriptada = DigestUtils.md5Hex(this.empleado.getClave());
-                    this.empleado.setClave(claveEncriptada);
-                    this.empleadoServicio.crearEmpleado(this.empleado);
-                    //this.empleados.add(0, this.empleado);
-                    this.inicializar();
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se registro el empleado: " + this.empleado.getNombre(), null));
-                } catch (Exception e) {
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
-                }
-            
+
+            try {
+                String claveEncriptada = DigestUtils.md5Hex(this.empleado.getClave());
+                this.empleado.setClave(claveEncriptada);
+                this.empleadoServicio.crearEmpleado(this.empleado);
+                //this.empleados.add(0, this.empleado);
+                this.inicializar();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se registro el empleado: " + this.empleado.getNombre(), null));
+            } catch (Exception e) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+            }
+
         } else if (super.isEnModificar()) {
 
-            
-                try {
+            try {
 
-                    String claveEncriptada = DigestUtils.md5Hex(this.empleado.getClave());
-                    this.empleado.setClave(claveEncriptada);
-                    this.empleadoServicio.actualiarEmpleado(this.empleado);
-                    BeanUtils.copyProperties(this.empleadoSelected, this.empleado);
-                    this.inicializar();
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se actualizo el empleado: " + this.empleado.getNombre(), null));
-                } catch (Exception e) {
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
-                }
-            
+                String claveEncriptada = DigestUtils.md5Hex(this.empleado.getClave());
+                this.empleado.setClave(claveEncriptada);
+                this.empleadoServicio.actualiarEmpleado(this.empleado);
+                BeanUtils.copyProperties(this.empleadoSelected, this.empleado);
+                this.inicializar();
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se actualizo el empleado: " + this.empleado.getNombre(), null));
+            } catch (Exception e) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+            }
 
         } else if (super.isEnEliminar()) {
             try {
@@ -252,11 +240,44 @@ public class EmpleadoBean extends BaseBean implements Serializable {
     public void resgistroCliente() {
         FacesContext context = FacesContext.getCurrentInstance();
 
+        String nombre = empleado.getNombre();
+        String resultado1 = validacion.validateTextoSoloLetras(nombre, 50);
+        try {
+            String resultado2 = validacion.validateNumeroEntero(empleado.getNumeroSegSocial(), 13);
+        } catch (Exception e) {
+
+        }
+        String resultado3 = validacion.validateTextoLetrasNumerosCaracteresEspeciales(empleado.getDireccion(), 100);
+        try{
+        String resultado4 = validacion.validateNumeroDecimal(empleado.getSalario().toString(), 8);
+        } catch (Exception e){
+            
+        }
         
+        String resultado5 = validacion.validateTextoLetrasNumerosCaracteresEspeciales(empleado.getUsuario(), 50);
+        String resultado6 = validacion.validateTextoLetrasNumerosCaracteresEspeciales(empleado.getClave(), 32);
 
         if (super.isEnNuevo()) {
-
-            if (empleadoServicio.buscarEmpleadoPorUsuario(empleado.getUsuario()) != null) {
+            /*
+             if (!"se".equals(resultado1)) {
+             FacesContext.getCurrentInstance().addMessage(null,
+             new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en nombre", resultado1));
+             } else if (!resultado2.equals("se")) {
+             FacesContext.getCurrentInstance().addMessage(null,
+             new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en identificación", resultado2));
+             } else if (!resultado3.equals("se")) {
+             FacesContext.getCurrentInstance().addMessage(null,
+             new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en dirección", resultado3));
+             } else if (!resultado4.equals("se")) {
+             FacesContext.getCurrentInstance().addMessage(null,
+             new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en salario", resultado4));
+             } else if (!resultado5.equals("se")) {
+             FacesContext.getCurrentInstance().addMessage(null,
+             new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en usuario", resultado5));
+             } else if (!resultado6.equals("se")) {
+             FacesContext.getCurrentInstance().addMessage(null,
+             new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", resultado6));
+             } else*/ if (empleadoServicio.buscarEmpleadoPorUsuario(empleado.getUsuario()) != null) {
                 context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR,
                         "Nombre de usuario ya utilizado ", null));
             } else {
@@ -271,14 +292,13 @@ public class EmpleadoBean extends BaseBean implements Serializable {
                     //Enviar el correo de comprobacion
                    /* String subject = "Activicación de cuenta SAIV";
 
-                    String cuerpo = "<h2>Activicación de cuenta SAIV</h2>"
-                            + "<h4>Felicidades usuario " + this.empleado.getUsuario() + ", su cuenta ha sido activada. Se le ha asignado la siguiente clave automaticamente: " + claveTemporal + " </h4>"
-                            + "<h4>Por favor ingrese con el usuario que registró  y esta clave. Posteriormente diríjase a la pestaña de "
-                            + "Información personal y cambie su clave</h4>";
+                     String cuerpo = "<h2>Activicación de cuenta SAIV</h2>"
+                     + "<h4>Felicidades usuario " + this.empleado.getUsuario() + ", su cuenta ha sido activada. Se le ha asignado la siguiente clave automaticamente: " + claveTemporal + " </h4>"
+                     + "<h4>Por favor ingrese con el usuario que registró  y esta clave. Posteriormente diríjase a la pestaña de "
+                     + "Información personal y cambie su clave</h4>";
 
-                    correo.EnviarCorreoSinArchivoAdjunto(this.empleado.getCorreoElectronico(), subject, cuerpo);*/
-
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se registro el cliente: " + this.empleado.getNombre()+"Clave temporal: "+claveTemporal, null));
+                     correo.EnviarCorreoSinArchivoAdjunto(this.empleado.getCorreoElectronico(), subject, cuerpo);*/
+                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Se registro el cliente: " + this.empleado.getNombre() + "Clave temporal: " + claveTemporal, null));
                     enRegistro = true;
                 } catch (Exception e) {
                     context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
@@ -340,30 +360,30 @@ public class EmpleadoBean extends BaseBean implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();
 
         if (super.isEnModificar()) {
-            
-                try {
-                    String claveEncriptada = DigestUtils.md5Hex(nuevaClave);
-                    this.empleado.setClave(claveEncriptada);
-                    this.empleadoServicio.actualiarEmpleado(this.empleado);
-                    BeanUtils.copyProperties(this.empleadoSesion, this.empleado);
-                    viejaClave = nuevaClave;
-                    nuevaClave = "";
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Su informacion ha sido actualizada", null));
-                } catch (Exception e) {
-                    context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
-                }
-            
+
+            try {
+                String claveEncriptada = DigestUtils.md5Hex(nuevaClave);
+                this.empleado.setClave(claveEncriptada);
+                this.empleadoServicio.actualiarEmpleado(this.empleado);
+                BeanUtils.copyProperties(this.empleadoSesion, this.empleado);
+                viejaClave = nuevaClave;
+                nuevaClave = "";
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Su informacion ha sido actualizada", null));
+            } catch (Exception e) {
+                context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, e.getMessage(), null));
+            }
+
         }
         this.cerrar();
     }
 
     public void validateNombre() {
 
-        String resultado = validacion.validateTextoSoloLetras(empleado.getNombre(), 100);
+        String resultado = validacion.validateTextoSoloLetras(empleado.getNombre(), 50);
 
         if (!resultado.equals("se")) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", resultado));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en nombre", resultado));
         }
     }
 
@@ -373,7 +393,11 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 
         if (!resultado.equals("se")) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", resultado));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en identificación", resultado));
+        } else if (!validacion.validadorDeCedula(empleado.getNumeroSegSocial())) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en identificación", "Cédula no válida"));
+
         }
     }
 
@@ -383,15 +407,23 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 
         if (!resultado.equals("se")) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", resultado));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en dirección", resultado));
         }
     }
 
-    
+    public void validateSalario() {
+
+        String resultado = validacion.validateNumeroDecimal(empleado.getSalario().toString(), 8);
+
+        if (!resultado.equals("se")) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en salario", resultado));
+        }
+    }
 
     public void validateUsuario() {
 
-        String resultado = validacion.validateTextoLetrasNumerosCaracteresEspeciales(empleado.getUsuario(), 20);
+        String resultado = validacion.validateTextoLetrasNumerosCaracteresEspeciales(empleado.getUsuario(), 50);
 
         if (!resultado.equals("se")) {
             FacesContext.getCurrentInstance().addMessage(null,
@@ -408,13 +440,8 @@ public class EmpleadoBean extends BaseBean implements Serializable {
 
         if (!resultado.equals("se")) {
             FacesContext.getCurrentInstance().addMessage(null,
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", resultado));
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en clave", resultado));
         }
     }
 
-    
-
-    
-
-   
 }

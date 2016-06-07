@@ -216,4 +216,14 @@ public class ProyectoBean extends BaseBean implements Serializable {
         this.getDatosLogin().setProyectoSelected(this.proyectoSelected);
     }
     
+    public void validateNombre() {
+
+        String resultado = validacion.validateTextoLetrasNumeros(proyecto.getDescripcion(), 50);
+
+        if (!resultado.equals("se")) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error en nombre proyecto", resultado));
+        }
+    }
+    
 }
