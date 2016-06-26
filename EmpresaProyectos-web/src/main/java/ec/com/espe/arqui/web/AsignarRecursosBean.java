@@ -5,9 +5,14 @@
  */
 package ec.com.espe.arqui.web;
 
+import ec.com.espe.arqui.web.WSRestful.ClienteConsultaSuministros;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import ec.com.espe.arqui.modelo.DetalleRecurso;
 import ec.com.espe.arqui.modelo.Proyecto;
 import ec.com.espe.arqui.servicio.ProyectoServicio;
+import ec.com.espe.arqui.web.WSRestful.ClienteFactura;
+import ec.com.espe.arqui.web.WSRestful.MyJaxBean;
 import ec.com.espe.arqui.webservices.DetalleFactura;
 import ec.com.espe.arqui.webservices.Producto;
 import java.lang.reflect.InvocationTargetException;
@@ -23,6 +28,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
 import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
+import javax.ws.rs.core.MediaType;
 import org.apache.commons.beanutils.BeanUtils;
 
 /**
@@ -187,7 +193,12 @@ public class AsignarRecursosBean {
             
             this.recursos = this.proyectoServicio.buscarRecursosPorProyecto(this.proyecto.getCodigo());
             this.cadenaCOnsulta = "";
-            this.productosConsulta = this.proyectoServicio.buscarProductosWS(this.cadenaCOnsulta);
+            //this.productosConsulta = this.proyectoServicio.buscarProductosWS(this.cadenaCOnsulta);
+            this.consultaProductosRestFul();
+            
+            
+            
+            
             this.busqueda=false;
         }
         catch(Exception e)
@@ -199,6 +210,17 @@ public class AsignarRecursosBean {
     public void consultaProductos()
     {
         this.productosConsulta = this.proyectoServicio.buscarProductosWS(this.cadenaCOnsulta);
+    }
+    
+    public void consultaProductosRestFul()
+    {
+        ClienteConsultaSuministros cliente = new ClienteConsultaSuministros();
+        
+        String productos = cliente.consultaPOST(this.cadenaCOnsulta,MediaType.APPLICATION_JSON.getClass());
+        
+        TypeToken<List<Producto>> token = new TypeToken<List<Producto>>(){};
+        Gson gson = new Gson();
+        this.productosConsulta = gson.fromJson(productos, token.getType());
     }
     
     public void realizarBusqueda()
@@ -236,6 +258,47 @@ public class AsignarRecursosBean {
             java.lang.Boolean result = port.guardarFactura(this.codigoCliente, this.listaDetalleFactura);
             System.out.println("Result = "+result);
             if(result)
+            {
+                System.out.println("La Compra se generó correctamente");
+                for(DetalleFactura detf : listaDetalleFactura)
+                {
+                    try
+                    {
+                        this.proyectoServicio.crearDetalleRecurso(new DetalleRecurso("", this.proyecto.getCodigo(), detf.getCodigoProducto(), detf.getProducto().getDescripcion(), detf.getCostoUnitario(), detf.getCantidad(), detf.getProducto().getCodigoProveedor(), detf.getProducto().getProveedor().getDescripcion(), new Date()));
+                        this.recursos = this.proyectoServicio.buscarRecursosPorProyecto(this.proyecto.getCodigo());
+                        this.cancel();
+                        FacesContext context = FacesContext.getCurrentInstance();
+                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Felicitaciones", "La compra se ha generado correctamente"));
+                    }
+                    catch(Exception ex)
+                    {
+                        FacesContext context = FacesContext.getCurrentInstance();
+                        context.addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error no controlado", ex.getMessage()));
+                    }
+                }
+            }
+            else
+                System.out.println("La compra no pudo ser realizada");
+        } catch (Exception ex) {
+            // TODO handle custom exceptions here
+            System.out.println("Hubo un error en la conexión");
+        }
+    }
+    
+    public void enviarPedidoRestFul()
+    {
+        try { // Call Web Service Operation
+          
+            MyJaxBean my = new MyJaxBean();
+        my.codigoCliente=this.codigoCliente;
+        my.detalleFactura=this.listaDetalleFactura;
+        
+            ClienteFactura cf = new ClienteFactura();
+        String result = cf.consultaPOST(my);
+            
+            
+            System.out.println("Result = "+result);
+            if(result.equals("Si"))
             {
                 System.out.println("La Compra se generó correctamente");
                 for(DetalleFactura detf : listaDetalleFactura)

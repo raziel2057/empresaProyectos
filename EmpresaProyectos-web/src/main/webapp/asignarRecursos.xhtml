@@ -68,7 +68,7 @@ and open the template in the editor.
                                     <p:messages id="messagebusqueda" showDetail="true" showSummary="true"/>
 
                                     <p:spacer />
-                                    <p:commandButton value="Buscar" actionListener="#{asignarRecursosBean.consultaProductos()}" oncomplete="PF('cliDialog').show()"  immediate="false" update="listaP" />
+                                    <p:commandButton value="Buscar" actionListener="#{asignarRecursosBean.consultaProductosRestFul()}" oncomplete="PF('cliDialog').show()"  immediate="false" update="listaP" />
                                     <p:commandButton value="Cancelar" actionListener="#{asignarRecursosBean.cancel()}" immediate="true"  update="@form" />
                                 </p:panelGrid>
                                 
